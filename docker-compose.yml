@@ -1,0 +1,40 @@
+version: '3.5'
+
+networks:
+  ys-id-network:
+    driver: bridge
+
+services:
+  db:
+    container_name: ys-id-database-pg
+    image: postgres:15.2
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - ys-id-network
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./pgdata/ys-id_pg:/var/lib/pg/data
+    ports:
+      - ${DB_PORT}:5432
+  app:
+    container_name: ys-id-app-container
+    build:
+      context: .
+      target: production
+    env_file:
+      - .env
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - ys-id-network
+    depends_on:
+      - db

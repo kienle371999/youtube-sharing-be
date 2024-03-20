@@ -1,0 +1,31 @@
+name: merged-develop
+
+on:
+  push:
+    branches:
+      - develop
+      # - test-ci-cd # this for testing
+
+jobs:
+  Deploy:
+    name: Deploy the develop branch by @${{ github.actor }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Connect to an EC2 instance and execute scripts
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ys-id-be
+            git fetch --all
+            git checkout develop
+            git reset --hard origin/develop
+            git pull origin develop
+            sudo docker-compose up --build -d
+            sudo docker image prune -a -f
+            sudo docker builder prune -f

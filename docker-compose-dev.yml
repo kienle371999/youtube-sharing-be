@@ -1,0 +1,17 @@
+version: '3.5'
+
+services:
+  db:
+    container_name: ys-id-dev-database-pg
+    image: postgres:15.2
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./pgdata/ys-id_pg_dev:/var/lib/pg/data
+    ports:
+      - ${DB_PORT}:5432

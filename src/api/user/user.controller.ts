@@ -20,7 +20,7 @@ export class UserController {
     httpStatus: HttpStatus.CREATED,
   })
   async createNewUser(@Body() body: CreateUserDto) {
-    return await this.userService.createNew(body);
+    return this.userService.createNew(body);
   }
 
   @Post('/login')
@@ -30,6 +30,6 @@ export class UserController {
     httpStatus: HttpStatus.CREATED,
   })
   async login(@Body() body: LoginUserDto) {
-    return await this.userService.login(body);
+    return this.userService.login(body);
   }
 }

@@ -4,3 +4,8 @@ export class CreateVideoDto {
   @IsSwaggerString()
   readonly url: string;
 }
+
+export interface CreateVideoPayload {
+  url: string;
+  userId: number;
+}

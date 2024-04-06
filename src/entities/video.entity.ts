@@ -26,6 +26,10 @@ export class Video extends AbstractTimeEntity {
   likeCount: number;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @IsSwaggerNumber()
+  @Column({ name: 'user_id', type: 'integer', nullable: false })
+  userId: number;
 }

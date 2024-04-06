@@ -5,7 +5,11 @@ import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { ENV } from 'src/config/environment';
 import { ERROR_MSG } from 'src/constant/error';
-import { CreateVideoDto } from 'src/dto/video-dto/create-video-dto';
+import {
+  CreateVideoDto,
+  CreateVideoPayload,
+} from 'src/dto/video-dto/create-video-dto';
+import { User } from 'src/entities/user.entity';
 import { Video } from 'src/entities/video.entity';
 import { AppException } from 'src/middleware/app-error-handler';
 import { Repository } from 'typeorm';
@@ -15,11 +19,13 @@ export class VideoService {
   constructor(
     @InjectRepository(Video)
     private readonly videoRepo: Repository<Video>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
     private readonly httpService: HttpService,
   ) {}
 
-  async createVideo(body: CreateVideoDto): Promise<Video> {
-    const params = new URLSearchParams(body.url);
+  async createVideo(payload: CreateVideoPayload): Promise<Video> {
+    const params = new URLSearchParams(payload.url);
     const prefixYoutubeUrl = 'https://www.youtube.com/watch?v';
     const videoId = params.get(prefixYoutubeUrl);
 
@@ -44,11 +50,16 @@ export class VideoService {
     const videoStats = data.items[0].statistics;
 
     const video = new Video();
-    video.url = body.url;
+    video.url = payload.url;
     video.title = videoSnippet.title;
     video.description = videoSnippet.description;
     video.likeCount = videoStats.likeCount;
+    video.userId = payload.userId;
 
     return this.videoRepo.save(video);
+  }
+
+  async getVideos(userId: number): Promise<Video[]> {
+    return this.videoRepo.findBy({ userId });
   }
 }

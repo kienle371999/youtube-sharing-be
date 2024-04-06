@@ -29,6 +29,10 @@ export class PageOptionsDto {
   @Min(0)
   readonly page?: number = 0;
 
+  @IsInt()
+  @Min(1)
+  readonly limit?: number = 10;
+
   @IsSwaggerNumber(
     {
       minimum: 1,

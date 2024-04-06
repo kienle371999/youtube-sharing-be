@@ -7,6 +7,7 @@ import { catchError, firstValueFrom, fromEvent, map, Observable } from 'rxjs';
 import { ENV } from 'src/config/environment';
 import COMMON from 'src/constant/common';
 import { ERROR_MSG } from 'src/constant/error';
+import { PageDto, PageMetaDto, PageOptionsDto } from 'src/dto/paginate.dto';
 import {
   CreateVideoEvent,
   CreateVideoPayload,
@@ -78,8 +79,27 @@ export class VideoService {
     return newVideo;
   }
 
-  async getVideos(userId: number): Promise<Video[]> {
-    return this.videoRepo.findBy({ userId });
+  async getVideos(pageOptionsDto: PageOptionsDto): Promise<PageDto<Video>> {
+    const { page, limit } = pageOptionsDto;
+
+    const [res, itemCount] = await this.videoRepo.findAndCount({
+      take: limit,
+      skip: page * limit,
+      order: {
+        createdAt: 'DESC',
+      },
+      relations: {
+        user: true,
+      },
+    });
+
+    return new PageDto(
+      res,
+      new PageMetaDto({
+        pageOptionsDto,
+        itemCount,
+      }),
+    );
   }
 
   handleVideoCreatedEvent(): Observable<MessageEvent> {

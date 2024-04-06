@@ -49,8 +49,17 @@ export class UserService {
     return { token };
   }
 
-  async getDetailById(id: number) {
-    const user = await this.userRepo.findOneBy({ id });
+  async getDetailById(id: number): Promise<User> {
+    const user = await this.userRepo.findOne({
+      select: {
+        id: true,
+        email: true,
+        username: true,
+      },
+      where: {
+        id,
+      },
+    });
     if (!user) throw new AppException(ERROR_MSG.USER_NOT_EXIST);
     return user;
   }

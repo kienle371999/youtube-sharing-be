@@ -1,14 +1,13 @@
-name: merged-develop
+name: push-master
 
 on:
   push:
     branches:
-      - develop
-      # - test-ci-cd # this for testing
+      - master
 
 jobs:
   Deploy:
-    name: Deploy the develop branch by @${{ github.actor }}
+    name: Deploy the master branch by @${{ github.actor }}
     runs-on: ubuntu-latest
 
     steps:
@@ -21,11 +20,8 @@ jobs:
           username: ${{ secrets.USER_NAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ys-id-be
-            git fetch --all
-            git checkout develop
-            git reset --hard origin/develop
-            git pull origin develop
+            cd youtube-sharing-be
+            git pull
             sudo docker-compose up --build -d
             sudo docker image prune -a -f
             sudo docker builder prune -f

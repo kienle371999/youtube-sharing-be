@@ -5,7 +5,8 @@ import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Video } from 'src/entities/video.entity';
 import { User } from 'src/entities/user.entity';
-
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { VideoEventController } from './video-event.controller';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Video]),
@@ -13,8 +14,9 @@ import { User } from 'src/entities/user.entity';
       timeout: 5000,
       maxRedirects: 5,
     }),
+    EventEmitterModule.forRoot(),
   ],
-  controllers: [VideoController],
+  controllers: [VideoController, VideoEventController],
   providers: [VideoService],
 })
 export class VideoModule {}

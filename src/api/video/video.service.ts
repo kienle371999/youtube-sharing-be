@@ -1,12 +1,14 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AxiosError } from 'axios';
-import { catchError, firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom, fromEvent, map, Observable } from 'rxjs';
 import { ENV } from 'src/config/environment';
+import COMMON from 'src/constant/common';
 import { ERROR_MSG } from 'src/constant/error';
 import {
-  CreateVideoDto,
+  CreateVideoEvent,
   CreateVideoPayload,
 } from 'src/dto/video-dto/create-video-dto';
 import { User } from 'src/entities/user.entity';
@@ -22,6 +24,7 @@ export class VideoService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     private readonly httpService: HttpService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async createVideo(payload: CreateVideoPayload): Promise<Video> {
@@ -49,6 +52,13 @@ export class VideoService {
     const videoSnippet = data.items[0].snippet;
     const videoStats = data.items[0].statistics;
 
+    const existedVideo = await this.videoRepo.findOneBy({
+      title: videoSnippet.title,
+    });
+    if (existedVideo) {
+      throw new AppException(ERROR_MSG.VIDEO_EXIST);
+    }
+
     const video = new Video();
     video.url = payload.url;
     video.title = videoSnippet.title;
@@ -56,10 +66,27 @@ export class VideoService {
     video.likeCount = videoStats.likeCount;
     video.userId = payload.userId;
 
-    return this.videoRepo.save(video);
+    const newVideo = await this.videoRepo.save(video);
+
+    const user = await this.userRepo.findOneBy({ id: payload.userId });
+    const eventPayload: CreateVideoEvent = {
+      name: user.username,
+      title: newVideo.title,
+    };
+    this.eventEmitter.emit(COMMON.EVENT, eventPayload);
+
+    return newVideo;
   }
 
   async getVideos(userId: number): Promise<Video[]> {
     return this.videoRepo.findBy({ userId });
+  }
+
+  handleVideoCreatedEvent(): Observable<MessageEvent> {
+    return fromEvent(this.eventEmitter, COMMON.EVENT).pipe(
+      map((data) => {
+        return { data } as MessageEvent;
+      }),
+    );
   }
 }

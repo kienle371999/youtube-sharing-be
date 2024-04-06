@@ -1,4 +1,4 @@
-import { Body, Get, HttpStatus, Post, Req } from '@nestjs/common';
+import { Body, Get, HttpStatus, Post, Req, Sse } from '@nestjs/common';
 import { VideoService } from './video.service';
 import { ApiHandleResponse } from 'src/decorator/api.decorator';
 import {
@@ -9,6 +9,8 @@ import ENTITY_NAME from 'src/constant/entity-name';
 import { IsAuthController } from 'src/decorator/auth.decorator';
 import { RequestAuth } from 'src/dto/request.dto';
 import { Video } from 'src/entities/video.entity';
+import { Observable } from 'rxjs';
+import COMMON from 'src/constant/common';
 
 @IsAuthController(ENTITY_NAME.VIDEOS, 'Video Auth', true)
 export class VideoController {

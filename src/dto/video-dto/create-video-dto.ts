@@ -9,3 +9,8 @@ export interface CreateVideoPayload {
   url: string;
   userId: number;
 }
+
+export interface CreateVideoEvent {
+  name: string;
+  title: string;
+}

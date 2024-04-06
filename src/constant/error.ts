@@ -20,6 +20,9 @@ export enum ERROR_MSG {
   // USER MSG
   USER_NOT_EXIST = 'USER_NOT_EXIST',
   PASSWORD_NOT_CORRECT = 'PASSWORD_NOT_CORRECT',
+
+  // VIDEO MSG
+  VIDEO_EXIST = 'VIDEO_EXIST',
 }
 
 export const AppError: Record<ERROR_MSG, IAppError> = {
@@ -66,6 +69,13 @@ export const AppError: Record<ERROR_MSG, IAppError> = {
   [ERROR_MSG.PASSWORD_NOT_CORRECT]: {
     code: 'PASSWORD_NOT_CORRECT',
     message: 'Password not correct',
+    status: HttpStatus.BAD_REQUEST,
+  },
+
+  // VIDEO ERROR
+  [ERROR_MSG.VIDEO_EXIST]: {
+    code: 'VIDEO_EXIST',
+    message: 'Video exists',
     status: HttpStatus.BAD_REQUEST,
   },
 };

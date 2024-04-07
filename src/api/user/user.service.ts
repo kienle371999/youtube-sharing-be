@@ -19,8 +19,14 @@ export class UserService {
   ) {}
 
   async createNew(body: CreateUserDto): Promise<boolean> {
+    const user = await this.userRepo.findOneBy({ email: body.email });
+    if (user) {
+      throw new AppException(ERROR_MSG.USER_EXIST);
+    }
+
     const newUser = new User();
     newUser.username = body.username;
+    newUser.email = body.email;
     newUser.password = body.password;
     await this.userRepo.save(newUser);
     return true;

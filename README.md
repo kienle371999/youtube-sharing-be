@@ -1,36 +1,33 @@
-# The server side for VCX
+# The server side for Youtube Sharing App
 
-- Prerequisite
+## Introduction
 
-> NodeJS 16+ (20.11.1)
+This is a platform to share youtube videos
 
-- Step 1:
+## Prerequisites
 
-  > Install the node modules
-  > `npm install`
-  >
-- Step 2:
+NodeJS 16+ (20.11.1)
 
-  > Copy the env file
-  > `cp .env.example  .env`
-  >
-- Step 3:
+## Installation
 
-  > install development environment by Docker
-  > `docker-compose -f docker-compose-dev.yml up -d`
-  >
-- Step 4:
-
-  > Run the app
-  > `npm run start:dev`
-  >
-
-## Development
-
-- Make module
-
-```bash
-$ npm i -g @nestjs/cli
-
-$ nest g module api/user && nest g service api/user && nest g controller api/user
 ```
+npm install
+cp .env.example .env
+docker-compose -f docker-compose-dev.yml up -d
+```
+
+## Seeding
+
+```
+npm run typescript src/seeding/user.seeding.ts
+```
+
+## Running application
+
+```
+npm run dev
+```
+
+## Deployment
+
+I use the Github Actions to make CI/CD

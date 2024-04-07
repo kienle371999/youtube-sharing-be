@@ -13,7 +13,7 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('/')
+  @Post('/register')
   @ApiHandleResponse({
     summary: 'Create a new user',
     type: Boolean,

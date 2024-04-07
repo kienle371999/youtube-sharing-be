@@ -19,6 +19,7 @@ export enum ERROR_MSG {
 
   // USER MSG
   USER_NOT_EXIST = 'USER_NOT_EXIST',
+  USER_EXIST = 'USER_EXIST',
   PASSWORD_NOT_CORRECT = 'PASSWORD_NOT_CORRECT',
 
   // VIDEO MSG
@@ -65,6 +66,11 @@ export const AppError: Record<ERROR_MSG, IAppError> = {
     code: 'USER_NOT_EXIST',
     message: 'User does not exist',
     status: HttpStatus.NOT_FOUND,
+  },
+  [ERROR_MSG.USER_EXIST]: {
+    code: 'USER_EXIST',
+    message: 'User exists',
+    status: HttpStatus.BAD_REQUEST,
   },
   [ERROR_MSG.PASSWORD_NOT_CORRECT]: {
     code: 'PASSWORD_NOT_CORRECT',

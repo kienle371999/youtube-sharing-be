@@ -1,24 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from 'src/app.module';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication;
+let app: INestApplication;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+beforeAll(async () => {
+  const moduleFixture: TestingModule = await Test.createTestingModule({
+    imports: [AppModule],
+  }).compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
+  app = moduleFixture.createNestApplication();
+  await app.init();
+});
+
+describe('Youtube Sharing Application', () => {
+  it('Login', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/users/login')
+      .send({ email: 'john.doe@example.com', password: 'qwerty456' });
+
+    expect(res.status).toBe(201);
   });
+});
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
-  });
+afterAll(() => {
+  app.close();
 });

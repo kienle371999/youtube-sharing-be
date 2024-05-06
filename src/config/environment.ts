@@ -1,9 +1,8 @@
 import { config as dotenvConfig } from 'dotenv';
 
-dotenvConfig({ path: '.env' });
+dotenvConfig({ path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env' });
 
 export const ENV = {
-  NODE_ENV: process.env.NODE_ENV,
   PORT: process.env.PORT,
   DATABASE: {
     DB_TYPE: process.env.DB_TYPE,
